@@ -16,6 +16,7 @@ import mpmath as mp
 from lmfit import minimize, Minimizer, Parameters, Parameter, report_fit
 #from scipy.optimize import leastsq
 pd.options.mode.chained_assignment = None
+import sys
 
 #Plotting
 import matplotlib as mpl
@@ -57,7 +58,7 @@ def freq_gen(f_start, f_stop, pts_decade=7):
     [1] = Angular frequency range [1/s]
     '''
     f_decades = np.log10(f_start) - np.log10(f_stop)
-    f_range = np.logspace(np.log10(f_start), np.log10(f_stop), num=np.around(pts_decade*f_decades), endpoint=True)
+    f_range = np.logspace(np.log10(f_start), np.log10(f_stop), num=np.around(pts_decade*int(f_decades)), endpoint=True)
     w_range = 2 * np.pi * f_range
     return f_range, w_range
 
@@ -535,7 +536,7 @@ def cir_RsTLsQ(w, Rs, L, Ri, Q='none', n='none'):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)  #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)  #Handles coth with x having very large or very small numbers
 
     Z_TLsQ = Lam * X1 * coth_mp        
 
@@ -584,7 +585,7 @@ def cir_RsRQTLsQ(w, Rs, R1, fs1, n1, L, Ri, Q, n, Q1='none'):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)
 
     Z_TLsQ = Lam * X1 * coth_mp
     
@@ -628,7 +629,7 @@ def cir_RsTLs(w, Rs, L, Ri, R='none', Q='none', n='none', fs='none'):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
     
     Z_TLs = Lam * X1 * coth_mp
     
@@ -679,7 +680,7 @@ def cir_RsRQTLs(w, Rs, L, Ri, R1, n1, fs1, R2, n2, fs2, Q1='none', Q2='none'):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
     
     Z_TLs = Lam * X1 * coth_mp
     
@@ -743,8 +744,8 @@ def cir_RsTLQ(w, L, Rs, Q, n, Rel, Ri):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -801,8 +802,8 @@ def cir_RsRQTLQ(w, L, Rs, Q, n, Rel, Ri, R1, n1, fs1, Q1='none'):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -853,8 +854,8 @@ def cir_RsTL(w, L, Rs, R, fs, n, Rel, Ri, Q='none'):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -913,8 +914,8 @@ def cir_RsRQTL(w, L, Rs, R1, fs1, n1, R2, fs2, n2, Rel, Ri, Q1='none', Q2='none'
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
     return Z_Rs + Z_RQ1 + Z_TL
@@ -970,7 +971,7 @@ def cir_RsTL_1Dsolid(w, L, D, radius, Rs, R, Q, n, R_w, n_w, Rel, Ri):
     x_mp = mp.matrix(x)
     warburg_coth_mp = []
     for i in range(len(w)):
-        warburg_coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)
+        warburg_coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)
 
     Z_w = R_w * np.array(warburg_coth_mp)/x
     
@@ -986,8 +987,8 @@ def cir_RsTL_1Dsolid(w, L, D, radius, Rs, R, Q, n, R_w, n_w, Rel, Ri):
 #    sinh_mp = []
 #    coth_mp = []
 #    for j in range(len(lamb_mp)):
-#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).real)+float((mp.sinh(lamb_mp[j]).imag))*1j)
-#        coth_mp.append(float(mp.coth(lamb_mp[j]).real)+float(mp.coth(lamb_mp[j]).imag)*1j)        
+#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).to_numpy().real)+float((mp.sinh(lamb_mp[j]).to_numpy().imag))*1j)
+#        coth_mp.append(float(mp.coth(lamb_mp[j]).to_numpy().real)+float(mp.coth(lamb_mp[j]).to_numpy().imag)*1j)        
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/np.array(sinh_mp))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/sinh(x))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
     return Z_Rs + Z_TL
@@ -1048,7 +1049,7 @@ def cir_RsRQTL_1Dsolid(w, L, D, radius, Rs, R1, fs1, n1, R2, Q2, n2, R_w, n_w, R
     x_mp = mp.matrix(x)
     warburg_coth_mp = []
     for i in range(len(w)):
-        warburg_coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)
+        warburg_coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)
 
     Z_w = R_w * np.array(warburg_coth_mp)/x
     
@@ -1064,8 +1065,8 @@ def cir_RsRQTL_1Dsolid(w, L, D, radius, Rs, R1, fs1, n1, R2, Q2, n2, R_w, n_w, R
 #    sinh_mp = []
 #    coth_mp = []
 #    for j in range(len(lamb_mp)):
-#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).real)+float((mp.sinh(lamb_mp[j]).imag))*1j)
-#        coth_mp.append(float(mp.coth(lamb_mp[j]).real)+float(mp.coth(lamb_mp[j]).imag)*1j)
+#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).to_numpy().real)+float((mp.sinh(lamb_mp[j]).to_numpy().imag))*1j)
+#        coth_mp.append(float(mp.coth(lamb_mp[j]).to_numpy().real)+float(mp.coth(lamb_mp[j]).to_numpy().imag)*1j)
 #        
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/np.array(sinh_mp))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
@@ -1132,7 +1133,7 @@ def cir_RC_fit(params, w):
     if str(params.keys())[10:].find("fs") == -1: #elif fs == 'none':
         R = params['R']
         Q = params['C']
-    return cir_RQ(w, R=R, Q=C, n=1, fs=fs)
+    return cir_RQ(w, R=R, Q=Q, n=1, fs=fs)
 
 
 def cir_RQ_fit(params, w):
@@ -1516,7 +1517,7 @@ def cir_RsTLsQ_fit(params, w):
 #    x_mp = mp.matrix(x) #x in mp.math format
 #    coth_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)  #Handles coth with x having very large or very small numbers
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)  #Handles coth with x having very large or very small numbers
 #    
 #    Z_TLsQ = Lam * X1 * coth_mp    
     Z_TLsQ = Lam * X1 * coth(x)
@@ -1567,7 +1568,7 @@ def cir_RsRQTLsQ_Fit(params, w):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
 
     Z_TLsQ = Lam * X1 * coth_mp
     
@@ -1612,7 +1613,7 @@ def cir_RsTLs_Fit(params, w):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
 
     Z_TLs = Lam * X1 * coth_mp
     
@@ -1678,7 +1679,7 @@ def cir_RsRQTLs_Fit(params, w):
     x_mp = mp.matrix(x) #x in mp.math format
     coth_mp = []
     for i in range(len(Lam)):
-        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
+        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
     
     Z_TLs = Lam * X1 * coth_mp
     
@@ -1712,8 +1713,8 @@ def cir_RsTLQ_fit(params, w):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -1770,8 +1771,8 @@ def cir_RsRQTLQ_fit(params, w):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -1827,8 +1828,8 @@ def cir_RsTL_Fit(params, w):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float(mp.sinh(x_mp[i]).imag)*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float(mp.sinh(x_mp[i]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -1903,9 +1904,9 @@ def cir_RsRQTL_fit(params, w):
 #    coth_mp = []
 #    sinh_mp = []
 #    for i in range(len(Lam)):
-#        coth_mp.append(float(mp.coth(x_mp[i]).real)+float((mp.coth(x_mp[i]).imag))*1j) #Handles coth with x having very large or very small numbers
-#        sinh_mp.append(float(((1-mp.exp(-2*x_mp[i]))/(2*mp.exp(-x_mp[i]))).real) + float(((1-mp.exp(-2*x_mp[i]))/(2*mp.exp(-x_mp[i]))).real)*1j)
-#        sinh_mp.append(float(mp.sinh(x_mp[i]).real)+float((mp.sinh(x_mp[i]).imag))*1j)
+#        coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float((mp.coth(x_mp[i]).to_numpy().imag))*1j) #Handles coth with x having very large or very small numbers
+#        sinh_mp.append(float(((1-mp.exp(-2*x_mp[i]))/(2*mp.exp(-x_mp[i]))).to_numpy().real) + float(((1-mp.exp(-2*x_mp[i]))/(2*mp.exp(-x_mp[i]))).to_numpy().real)*1j)
+#        sinh_mp.append(float(mp.sinh(x_mp[i]).to_numpy().real)+float((mp.sinh(x_mp[i]).to_numpy().imag))*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/np.array(sinh_mp))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*Lam)/sinh(x))) + Lam * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -1945,7 +1946,7 @@ def cir_RsTL_1Dsolid_fit(params, w):
     x_mp = mp.matrix(x)
     warburg_coth_mp = []
     for i in range(len(w)):
-        warburg_coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)
+        warburg_coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)
 
     Z_w = R_w * np.array(warburg_coth_mp)/x
     
@@ -1961,8 +1962,8 @@ def cir_RsTL_1Dsolid_fit(params, w):
 #    sinh_mp = []
 #    coth_mp = []
 #    for j in range(len(lamb_mp)):
-#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).real)+float((mp.sinh(lamb_mp[j]).imag))*1j)
-#        coth_mp.append(float(mp.coth(lamb_mp[j]).real)+float(mp.coth(lamb_mp[j]).imag)*1j)
+#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).to_numpy().real)+float((mp.sinh(lamb_mp[j]).to_numpy().imag))*1j)
+#        coth_mp.append(float(mp.coth(lamb_mp[j]).to_numpy().real)+float(mp.coth(lamb_mp[j]).to_numpy().imag)*1j)
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/np.array(sinh_mp))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
     
     Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/sinh(x))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * coth(x)
@@ -2023,7 +2024,7 @@ def cir_RsRQTL_1Dsolid_fit(params, w):
     x_mp = mp.matrix(x)
     warburg_coth_mp = []
     for i in range(len(w)):
-        warburg_coth_mp.append(float(mp.coth(x_mp[i]).real)+float(mp.coth(x_mp[i]).imag)*1j)
+        warburg_coth_mp.append(float(mp.coth(x_mp[i]).to_numpy().real)+float(mp.coth(x_mp[i]).to_numpy().imag)*1j)
 
     Z_w = R_w * np.array(warburg_coth_mp)/x
     
@@ -2039,8 +2040,8 @@ def cir_RsRQTL_1Dsolid_fit(params, w):
 #    sinh_mp = []
 #    coth_mp = []
 #    for j in range(len(lamb_mp)):
-#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).real)+float((mp.sinh(lamb_mp[j]).imag))*1j)
-#        coth_mp.append(float(mp.coth(lamb_mp[j]).real)+float(mp.coth(lamb_mp[j]).imag)*1j)
+#        sinh_mp.append(float(mp.sinh(lamb_mp[j]).to_numpy().real)+float((mp.sinh(lamb_mp[j]).to_numpy().imag))*1j)
+#        coth_mp.append(float(mp.coth(lamb_mp[j]).to_numpy().real)+float(mp.coth(lamb_mp[j]).to_numpy().imag)*1j)
 #        
 #    Z_TL = ((Rel*Ri)/(Rel+Ri)) * (L+((2*lamb)/np.array(sinh_mp))) + lamb * ((Rel**2 + Ri**2)/(Rel+Ri)) * np.array(coth_mp)
 
@@ -2199,10 +2200,13 @@ def leastsq_errorfunc(params, w, re, im, circuit, weight_func):
         for k in range(len(re)):
             unity_1s.append(1) #makes an array of [1]'s, so that the weighing is == 1 * sum of squres.
         weight = [unity_1s, unity_1s]
+    elif weight_func == 'ivium':
+        weight=[1/(re**2+im**2), 1/(re**2+im**2)]
     else:
         print('weight not defined in leastsq_errorfunc()')
         
     S = np.array(weight) * error #weighted sum of squares 
+    
     return S
 
 ### Fitting Class
@@ -2237,8 +2241,11 @@ class EIS_exp:
                 self.df_raw0.append(extract_dta(path=path, EIS_name=data[j])) #reads all datafiles
             elif data[j].find(".z") != -1: #file is a .z file
                 self.df_raw0.append(extract_solar(path=path, EIS_name=data[j])) #reads all datafiles
+            elif data[j].find(".csv") != -1: #file is a .csv file
+                self.df_raw0.append(extract_ivium(path=path, EIS_name=data[j])) #reads all datafiles
             else:
                 print('Data file(s) could not be identified')
+                sys.exit()
 
             self.cycleno.append(self.df_raw0[j].cycle_number)
             if np.min(self.cycleno[j]) <= np.max(self.cycleno[j-1]):
@@ -2636,8 +2643,8 @@ class EIS_exp:
             else:
                 print('RC simulation circuit not defined')
                 print('   Number of RC = ', self.number_RC)
-            self.KK_rr_re.append(residual_real(re=self.df[i].re, fit_re=self.KK_circuit_fit[i].real, fit_im=-self.KK_circuit_fit[i].imag)) #relative residuals for the real part
-            self.KK_rr_im.append(residual_imag(im=self.df[i].im, fit_re=self.KK_circuit_fit[i].real, fit_im=-self.KK_circuit_fit[i].imag)) #relative residuals for the imag part
+            self.KK_rr_re.append(residual_real(re=self.df[i].re, fit_re=self.KK_circuit_fit[i].to_numpy().real, fit_im=-self.KK_circuit_fit[i].to_numpy().imag)) #relative residuals for the real part
+            self.KK_rr_im.append(residual_imag(im=self.df[i].im, fit_re=self.KK_circuit_fit[i].to_numpy().real, fit_im=-self.KK_circuit_fit[i].to_numpy().imag)) #relative residuals for the imag part
 
         ### Plotting Linear_kk results
         ##
@@ -3972,8 +3979,10 @@ class EIS_exp:
                     fig.savefig(savefig)
             else:
                 print('Too many spectras, cannot plot all. Maximum spectras allowed = 9')
-
-    def EIS_fit(self, params, circuit, weight_func='modulus', nan_policy='raise'):
+         
+    FitOutput_Data=[]
+    
+    def EIS_fit(self, params, circuit, weight_func='modulus', nan_policy='raise',FitOutput_Data=[]):
         '''
         EIS_fit() fits experimental data to an equivalent circuit model using complex non-linear least-squares (CNLS) fitting procedure and allows for batch fitting.
         
@@ -4020,14 +4029,81 @@ class EIS_exp:
         ------------
         Returns the fitted impedance spectra(s) but also the fitted parameters that were used in the initial guesses. To call these use e.g. self.fit_Rs
         '''
+        chisqr_StatFit=None
+        C_i=[]; Rs_i=[]; R_i=[]; n_i=[]; sigma_i=[]; fs_i=[]
+        
         self.Fit = []
         self.circuit_fit = []
         self.fit_E = []
         for i in range(len(self.df)):
             self.Fit.append(minimize(leastsq_errorfunc, params, method='leastsq', args=(self.df[i].w.values, self.df[i].re.values, self.df[i].im.values, circuit, weight_func), nan_policy=nan_policy, maxfev=9999990))
-            print(report_fit(self.Fit[i]))
-            
+            #print(report_fit(self.Fit[i]))
             self.fit_E.append(np.average(self.df[i].E_avg))
+
+        #############
+            '''
+            Extracting data files from Ivium '.csv' format
+            Nezam Azizaddini (NEAZ@hempel.com || nezam.aziz@gmail.com)
+            '''
+            # export fitting chisqr and input parameters value
+            chisqr_StatFit=(self.Fit[i].chisqr)
+            if circuit == 'C':
+                C_i=(params['C'].value)
+            elif circuit == 'RC':
+                R_i=(params['R'].value)
+                C_i=(params['C'].value)
+                fs_i=(params['fs'].value)
+            elif circuit == 'RQ':
+                R_i=(params['R'].value)
+                fs_i=(params['fs'].value)
+                n_i=(params['n'].value)
+                sigma_i=(params['sigma'].value)
+            elif circuit == 'R-(Q(RW))':
+                Rs_i=(params['Rs'].value)
+                R_i=(params['R'].value)
+                fs_i=(params['fs'].value)
+                n_i=(params['n'].value)
+                sigma_i=(params['sigma'].value)
+            
+        # extract Curve Fitting Parameters
+        if circuit == 'C':
+            self.FitOutput_Data={'ChiSqr':chisqr_StatFit}
+            self.FitOutput_Data['Rs']=0
+            self.FitOutput_Data['R']=0
+            self.FitOutput_Data['C']=C_i
+            self.FitOutput_Data['fs']=0
+            self.FitOutput_Data['n']=0
+            self.FitOutput_Data['sigma']=0
+            self.FitOutput_Data['circuit']='C'
+        elif circuit == 'RC':
+            self.FitOutput_Data={'ChiSqr':chisqr_StatFit}
+            self.FitOutput_Data['Rs']=0
+            self.FitOutput_Data['R']=R_i
+            self.FitOutput_Data['C']=C_i
+            self.FitOutput_Data['fs']=fs_i
+            self.FitOutput_Data['n']=0
+            self.FitOutput_Data['sigma']=0
+            self.FitOutput_Data['circuit']='RC'
+        elif circuit == 'RQ':
+            self.FitOutput_Data={'ChiSqr':chisqr_StatFit}
+            self.FitOutput_Data['Rs']=0
+            self.FitOutput_Data['R']=R_i
+            self.FitOutput_Data['C']=0
+            self.FitOutput_Data['fs']=fs_i
+            self.FitOutput_Data['n']=n_i
+            self.FitOutput_Data['sigma']=sigma_i
+            self.FitOutput_Data['circuit']='RQ'
+        elif circuit == 'R-(Q(RW))':
+            self.FitOutput_Data={'ChiSqr':chisqr_StatFit}
+            self.FitOutput_Data['Rs']=Rs_i
+            self.FitOutput_Data['R']=R_i
+            self.FitOutput_Data['C']=0
+            self.FitOutput_Data['fs']=fs_i
+            self.FitOutput_Data['n']=n_i
+            self.FitOutput_Data['sigma']=sigma_i
+            self.FitOutput_Data['circuit']='R-(Q(RW))'
+        
+        #############
             
         if circuit == 'C':
             self.fit_C = []
@@ -4698,7 +4774,7 @@ class EIS_exp:
         for i in range(len(self.df)):
             ax.plot(self.df[i].re, self.df[i].im, marker='o', ms=4, lw=2, color=colors[i], ls='-', label=self.label_cycleno[i])
             if fitting == 'on':
-                ax.plot(self.circuit_fit[i].real, -self.circuit_fit[i].imag, lw=0, marker='o', ms=8, mec='r', mew=1, mfc='none', label='')
+                ax.plot(self.circuit_fit[i].to_numpy().real, -self.circuit_fit[i].to_numpy().imag, lw=0, marker='o', ms=8, mec='r', mew=1, mfc='none', label='')
 
         ### Bode Plot
         if bode=='on':
@@ -4706,8 +4782,8 @@ class EIS_exp:
                 ax1.plot(np.log10(self.df[i].f), self.df[i].re, color=colors_real[i], marker='D', ms=3, lw=2.25, ls='-', label=self.label_re_1[i])
                 ax1.plot(np.log10(self.df[i].f), self.df[i].im, color=colors_imag[i], marker='s', ms=3, lw=2.25, ls='-', label=self.label_im_1[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), self.circuit_fit[i].real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
-                    ax1.plot(np.log10(self.df[i].f), -self.circuit_fit[i].imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
+                    ax1.plot(np.log10(self.df[i].f), self.circuit_fit[i].to_numpy().real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), -self.circuit_fit[i].to_numpy().imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("Z', -Z'' [$\Omega$]")
                 if legend == 'on' or legend == 'potential': 
@@ -4717,7 +4793,7 @@ class EIS_exp:
             for i in range(len(self.df)):
                 ax1.plot(np.log10(self.df[i].f), self.df[i].re, color=colors_real[i], marker='D', ms=3, lw=2.25, ls='-', label=self.label_cycleno[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), self.circuit_fit[i].real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), self.circuit_fit[i].to_numpy().real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("Z' [$\Omega$]")
                 if legend == 'on' or legend =='potential':
@@ -4727,7 +4803,7 @@ class EIS_exp:
             for i in range(len(self.df)):
                 ax1.plot(np.log10(self.df[i].f), np.log10(self.df[i].re), color=colors_real[i], marker='D', ms=3, lw=2.25, ls='-', label=self.label_cycleno[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), np.log10(self.circuit_fit[i].real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), np.log10(self.circuit_fit[i].to_numpy().real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("log(Z') [$\Omega$]")
                 if legend == 'on' or legend == 'potential': 
@@ -4737,7 +4813,7 @@ class EIS_exp:
             for i in range(len(self.df)):
                 ax1.plot(np.log10(self.df[i].f), self.df[i].im, color=colors_imag[i], marker='s', ms=3, lw=2.25, ls='-', label=self.label_cycleno[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), -self.circuit_fit[i].imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), -self.circuit_fit[i].to_numpy().imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("-Z'' [$\Omega$]")
                 if legend == 'on' or legend == 'potential':
@@ -4747,7 +4823,7 @@ class EIS_exp:
             for i in range(len(self.df)):
                 ax1.plot(np.log10(self.df[i].f), np.log10(self.df[i].im), color=colors_imag[i], marker='s', ms=3, lw=2.25, ls='-', label=self.label_cycleno[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), np.log10(-self.circuit_fit[i].imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), np.log10(-self.circuit_fit[i].to_numpy().imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("log(-Z'') [$\Omega$]")
                 if legend == 'on' or legend == 'potential':
@@ -4758,8 +4834,8 @@ class EIS_exp:
                 ax1.plot(np.log10(self.df[i].f), np.log10(self.df[i].re), color=colors_real[i], marker='D', ms=3, lw=2.25,  ls='-', label=self.label_re_1[i])
                 ax1.plot(np.log10(self.df[i].f), np.log10(self.df[i].im), color=colors_imag[i], marker='s', ms=3, lw=2.25,  ls='-', label=self.label_im_1[i])
                 if fitting == 'on':
-                    ax1.plot(np.log10(self.df[i].f), np.log10(self.circuit_fit[i].real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
-                    ax1.plot(np.log10(self.df[i].f), np.log10(-self.circuit_fit[i].imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
+                    ax1.plot(np.log10(self.df[i].f), np.log10(self.circuit_fit[i].to_numpy().real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='')
+                    ax1.plot(np.log10(self.df[i].f), np.log10(-self.circuit_fit[i].to_numpy().imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
                 ax1.set_xlabel("log(f) [Hz]")
                 ax1.set_ylabel("log(Z', -Z'') [$\Omega$]")
                 if legend == 'on' or legend == 'potential':
@@ -4773,8 +4849,8 @@ class EIS_exp:
                 self.rr_real = []
                 self.rr_imag = []
                 for i in range(len(self.df)):
-                    self.rr_real.append(residual_real(re=self.df[i].re.values, fit_re=self.circuit_fit[i].real, fit_im=-self.circuit_fit[i].imag))
-                    self.rr_imag.append(residual_imag(im=self.df[i].im.values, fit_re=self.circuit_fit[i].real, fit_im=-self.circuit_fit[i].imag))
+                    self.rr_real.append(residual_real(re=self.df[i].re.values, fit_re=self.circuit_fit[i].to_numpy().real, fit_im=-self.circuit_fit[i].to_numpy().imag))
+                    self.rr_imag.append(residual_imag(im=self.df[i].im.values, fit_re=self.circuit_fit[i].to_numpy().real, fit_im=-self.circuit_fit[i].to_numpy().imag))
                     if legend == 'on':
                         ax2.plot(np.log10(self.df[i].f), self.rr_real[i]*100, color=colors_real[i], marker='D', ms=6, lw=1, ls='--', label='#'+str(i+1))
                         ax2.plot(np.log10(self.df[i].f), self.rr_imag[i]*100, color=colors_imag[i], marker='s', ms=6, lw=1, ls='--',label='')
@@ -5044,8 +5120,8 @@ class EIS_sim:
     def __init__(self, circuit, frange, bode='off', nyq_xlim='none', nyq_ylim='none', legend='on', savefig='none'):
         self.f = frange
         self.w = 2*np.pi*frange
-        self.re = circuit.real
-        self.im = -circuit.imag
+        self.re = circuit.to_numpy().real
+        self.im = -circuit.to_numpy().imag
 
         if bode=='off':
             fig = figure(dpi=120, facecolor='w', edgecolor='w')
@@ -5951,14 +6027,14 @@ class EIS_sim:
 
         ### Nyquist Plot
         ax.plot(self.re, self.im, color=colors[0], marker='o', ms=4, lw=2, ls='-', label='Sim')
-        ax.plot(self.circuit_fit.real, -self.circuit_fit.imag, lw=0, marker='o', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+        ax.plot(self.circuit_fit.to_numpy().real, -self.circuit_fit.to_numpy().imag, lw=0, marker='o', ms=8, mec='r', mew=1, mfc='none', label='Fit')
 
         ### Bode Plot
         if bode=='on':
             ax1.plot(np.log10(self.f), self.re, color=colors_real[0], marker='D', ms=3, lw=2.25, ls='-', label="Z'")
             ax1.plot(np.log10(self.f), self.im, color=colors_imag[0], marker='s', ms=3, lw=2.25, ls='-', label="-Z''")
-            ax1.plot(np.log10(self.f), self.circuit_fit.real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
-            ax1.plot(np.log10(self.f), -self.circuit_fit.imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
+            ax1.plot(np.log10(self.f), self.circuit_fit.to_numpy().real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), -self.circuit_fit.to_numpy().imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("Z', -Z'' [$\Omega$]")
             if legend == 'on': 
@@ -5966,7 +6042,7 @@ class EIS_sim:
             
         elif bode == 're':
             ax1.plot(np.log10(self.f), self.re, color=colors_real[0], marker='D', ms=3, lw=2.25, ls='-', label="Z'")
-            ax1.plot(np.log10(self.f), self.circuit_fit.real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), self.circuit_fit.to_numpy().real, lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("Z' [$\Omega$]")
             if legend == 'on': 
@@ -5974,7 +6050,7 @@ class EIS_sim:
 
         elif bode == 'log_re':
             ax1.plot(np.log10(self.f), np.log10(self.re), color=colors_real[0], marker='D', ms=3, lw=2.25, ls='-', label="Z''")
-            ax1.plot(np.log10(self.f), np.log10(self.circuit_fit.real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), np.log10(self.circuit_fit.to_numpy().real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("log(Z') [$\Omega$]")
             if legend == 'on': 
@@ -5982,7 +6058,7 @@ class EIS_sim:
 
         elif bode=='im':
             ax1.plot(np.log10(self.f), self.im, color=colors_imag[0], marker='s', ms=3, lw=2.25, ls='-', label="-Z''")
-            ax1.plot(np.log10(self.f), -self.circuit_fit.imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), -self.circuit_fit.to_numpy().imag, lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='Fit')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("-Z'' [$\Omega$]")
             if legend == 'on': 
@@ -5990,7 +6066,7 @@ class EIS_sim:
 
         elif bode=='log_im':
             ax1.plot(np.log10(self.f), np.log10(self.im), color=colors_imag[0], marker='s', ms=3, lw=2.25, ls='-', label="-Z''")
-            ax1.plot(np.log10(self.f), np.log10(-self.circuit_fit.imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), np.log10(-self.circuit_fit.to_numpy().imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none', label='Fit')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("log(-Z'') [$\Omega$]")
             if legend == 'on': 
@@ -5999,8 +6075,8 @@ class EIS_sim:
         elif bode == 'log':
             ax1.plot(np.log10(self.f), np.log10(self.re), color=colors_real[0], marker='D', ms=3, lw=2.25,  ls='-', label="Z''")
             ax1.plot(np.log10(self.f), np.log10(self.im), color=colors_imag[0], marker='s', ms=3, lw=2.25,  ls='-', label="-Z''")
-            ax1.plot(np.log10(self.f), np.log10(self.circuit_fit.real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
-            ax1.plot(np.log10(self.f), np.log10(-self.circuit_fit.imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
+            ax1.plot(np.log10(self.f), np.log10(self.circuit_fit.to_numpy().real), lw=0, marker='D', ms=8, mec='r', mew=1, mfc='none', label='Fit')
+            ax1.plot(np.log10(self.f), np.log10(-self.circuit_fit.to_numpy().imag), lw=0, marker='s', ms=8, mec='r', mew=1, mfc='none')
             ax1.set_xlabel("log(f) [Hz]")
             ax1.set_ylabel("log(Z', -Z'') [$\Omega$]")
             if legend == 'on': 
@@ -6022,5 +6098,5 @@ class EIS_sim:
             fig.savefig(savefig) #saves figure if fix text is given
 
 #print()
-#print('---> PyEIS Core Loaded (v. 0.5.7 - 02/01/19)')
+# print('---> PyEIS Core Loaded (v. 1.0.10 - 02/01/19)')
 #print()

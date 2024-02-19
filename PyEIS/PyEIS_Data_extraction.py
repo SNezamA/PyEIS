@@ -142,6 +142,23 @@ def extract_solar(path, EIS_name):
     data = data.assign(cycle_number = 1.0)
     return data
 
+def extract_ivium(path, EIS_name):
+    '''
+    Extracting data files from Ivium '.csv' format
+    
+    Nezam Azizaddini (NEAZ@hempel.com || nezam.aziz@gmail.com)
+    '''
+
+    dummy_col = ['re', 'im', 'f']
+    data = pd.read_csv(path+EIS_name, names=dummy_col, encoding='latin1')
+        
+    data = data.assign(cycle_number = 1.0)
+    data = data.assign(E_avg = 0.05)
+    data.update({'im': -data.im})
+    
+    return data
+    
+    
 #
 #print()
 #print('---> Data Extraction Script Loaded (v. 0.0.2 - 06/27/18)')
