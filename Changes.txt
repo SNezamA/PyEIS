@@ -15,3 +15,13 @@ Bugs:
 
 Features and improvements:
 * PyEIS is now compatible with Solartron's '*.z' data format
+
+
+Author: Nezam Azizaddini
+V1.0.10_20240219_SNezamA
+———————————————
+Released February 19, 2024
+
+Features and improvements:
+* Load csv files exported from Ivium potentiostats with 3 columns (Z_real, Z_imag, Frequency)
+* Exporting Xi square to compare different equivalent circuits when input parameters vary
